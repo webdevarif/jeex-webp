@@ -37,22 +37,23 @@ wp_clear_scheduled_hook( 'jeex_webp_cron_convert' );
 // Remove passthru file
 $passthruFile = WP_CONTENT_DIR . '/jeex-webp-passthru.php';
 if ( file_exists( $passthruFile ) ) {
-    @unlink( $passthruFile );
+    wp_delete_file( $passthruFile );
 }
 
-// Remove .htaccess rules
-$htaccessFiles = [
+// Remove .htaccess rules.
+$htaccessFiles = array(
     WP_CONTENT_DIR . '/uploads/.htaccess',
     WP_CONTENT_DIR . '/uploads-webpc/.htaccess',
     WP_CONTENT_DIR . '/.htaccess',
-];
+);
 
 foreach ( $htaccessFiles as $file ) {
     if ( ! file_exists( $file ) ) {
         continue;
     }
 
-    $content = @file_get_contents( $file );
+    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+    $content = file_get_contents( $file );
     if ( false === $content ) {
         continue;
     }
@@ -61,9 +62,10 @@ foreach ( $htaccessFiles as $file ) {
     $cleaned = trim( $cleaned );
 
     if ( empty( $cleaned ) ) {
-        @unlink( $file );
+        wp_delete_file( $file );
     } else {
-        @file_put_contents( $file, $cleaned . "\n" );
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+        file_put_contents( $file, $cleaned . "\n" );
     }
 }
 

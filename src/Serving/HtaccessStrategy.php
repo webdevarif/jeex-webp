@@ -64,7 +64,8 @@ class HtaccessStrategy implements ServeStrategy {
             return false;
         }
 
-        $content = @file_get_contents( $htaccess );
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+        $content = file_get_contents( $htaccess );
         return false !== $content && false !== strpos( $content, '# BEGIN Jeex WebP' );
     }
 
@@ -79,18 +80,20 @@ class HtaccessStrategy implements ServeStrategy {
         $content = '';
 
         if ( file_exists( $filepath ) ) {
-            $content = @file_get_contents( $filepath );
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+            $content = file_get_contents( $filepath );
             if ( false === $content ) {
                 return false;
             }
 
-            // Remove existing rules first
+            // Remove existing rules first.
             $content = $this->stripExistingRules( $content );
         }
 
         $content = trim( $rules ) . "\n\n" . trim( $content );
 
-        return false !== @file_put_contents( $filepath, trim( $content ) . "\n" );
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+        return false !== file_put_contents( $filepath, trim( $content ) . "\n" );
     }
 
     private function removeRulesFromFile( string $filepath ): bool {
@@ -98,7 +101,8 @@ class HtaccessStrategy implements ServeStrategy {
             return true;
         }
 
-        $content = @file_get_contents( $filepath );
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+        $content = file_get_contents( $filepath );
         if ( false === $content ) {
             return false;
         }
@@ -107,11 +111,12 @@ class HtaccessStrategy implements ServeStrategy {
         $cleaned = trim( $cleaned );
 
         if ( empty( $cleaned ) ) {
-            @unlink( $filepath );
+            wp_delete_file( $filepath );
             return true;
         }
 
-        return false !== @file_put_contents( $filepath, $cleaned . "\n" );
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+        return false !== file_put_contents( $filepath, $cleaned . "\n" );
     }
 
     private function stripExistingRules( string $content ): string {

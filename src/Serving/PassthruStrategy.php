@@ -24,7 +24,7 @@ class PassthruStrategy implements ServeStrategy {
         $file = $this->getPassthruFilePath();
 
         if ( file_exists( $file ) ) {
-            @unlink( $file );
+            wp_delete_file( $file );
         }
 
         return true;
@@ -108,22 +108,29 @@ class PassthruStrategy implements ServeStrategy {
 /**
  * Jeex WebP Passthrough Server
  *
- * This file serves WebP images when .htaccess rewrites are not available.
+ * This file serves WebP/AVIF images when .htaccess rewrites are not available.
  * Generated automatically by Jeex WebP plugin.
+ *
+ * @package JeexWebp
  */
 
-if ( ! isset( $_GET['src'] ) ) {
+if ( ! isset( $_GET['src'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
     http_response_code( 400 );
     exit;
 }
 
-$src = $_GET['src'];
-
-// Sanitize path
-$src = str_replace( [ '..', "\0" ], '', $src );
+// Sanitize: strip null bytes, parent traversal, and trim slashes.
+$src = isset( $_GET['src'] ) ? (string) $_GET['src'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+$src = str_replace( array( '..', "\0", "\r", "\n" ), '', $src );
+$src = preg_replace( '/[^a-zA-Z0-9_\-\/\.]/', '', $src );
 $src = ltrim( $src, '/' );
 
-$extensions = [ 'jpg', 'jpeg', 'png', 'gif' ];
+if ( empty( $src ) ) {
+    http_response_code( 400 );
+    exit;
+}
+
+$extensions = array( 'jpg', 'jpeg', 'png', 'gif' );
 $ext = strtolower( pathinfo( $src, PATHINFO_EXTENSION ) );
 
 if ( ! in_array( $ext, $extensions, true ) ) {
@@ -131,7 +138,7 @@ if ( ! in_array( $ext, $extensions, true ) ) {
     exit;
 }
 
-$accept = isset( $_SERVER['HTTP_ACCEPT'] ) ? $_SERVER['HTTP_ACCEPT'] : '';
+$accept = isset( $_SERVER['HTTP_ACCEPT'] ) ? (string) $_SERVER['HTTP_ACCEPT'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 PHP;
 
@@ -144,10 +151,11 @@ PHP;
 
 
 $sourcePath = $uploadsDir . $src;
+$avifPath   = $outputDir . $src . '.avif';
 $webpPath   = $outputDir . $src . '.webp';
 
-// Path traversal check
-$realSource = realpath( dirname( $sourcePath ) );
+// Path traversal check.
+$realSource  = realpath( dirname( $sourcePath ) );
 $realUploads = realpath( $uploadsDir );
 
 if ( false === $realSource || false === $realUploads || strpos( $realSource, $realUploads ) !== 0 ) {
@@ -155,27 +163,38 @@ if ( false === $realSource || false === $realUploads || strpos( $realSource, $re
     exit;
 }
 
-// Serve WebP if browser supports it and file exists
+// Serve AVIF first if browser supports it and file exists.
+if ( strpos( $accept, 'image/avif' ) !== false && file_exists( $avifPath ) ) {
+    header( 'Content-Type: image/avif' );
+    header( 'Content-Length: ' . filesize( $avifPath ) );
+    header( 'Cache-Control: public, max-age=31536000' );
+    header( 'Vary: Accept' );
+    header( 'X-Jeex-WebP: avif' );
+    readfile( $avifPath );
+    exit;
+}
+
+// Serve WebP if browser supports it and file exists.
 if ( strpos( $accept, 'image/webp' ) !== false && file_exists( $webpPath ) ) {
     header( 'Content-Type: image/webp' );
     header( 'Content-Length: ' . filesize( $webpPath ) );
     header( 'Cache-Control: public, max-age=31536000' );
     header( 'Vary: Accept' );
-    header( 'X-Jeex-WebP: passthru' );
+    header( 'X-Jeex-WebP: webp' );
     readfile( $webpPath );
     exit;
 }
 
-// Serve original if it exists
+// Serve original if it exists.
 if ( file_exists( $sourcePath ) ) {
-    $mimeMap = [
+    $mimeMap = array(
         'jpg'  => 'image/jpeg',
         'jpeg' => 'image/jpeg',
         'png'  => 'image/png',
         'gif'  => 'image/gif',
-    ];
+    );
 
-    $mime = $mimeMap[ $ext ] ?? 'application/octet-stream';
+    $mime = isset( $mimeMap[ $ext ] ) ? $mimeMap[ $ext ] : 'application/octet-stream';
 
     header( 'Content-Type: ' . $mime );
     header( 'Content-Length: ' . filesize( $sourcePath ) );
@@ -189,6 +208,8 @@ exit;
 PHP2;
 
         $filepath = $this->getPassthruFilePath();
-        return false !== @file_put_contents( $filepath, $content );
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+        $result = file_put_contents( $filepath, $content );
+        return false !== $result;
     }
 }

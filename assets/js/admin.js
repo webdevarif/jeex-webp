@@ -133,7 +133,7 @@
         if (btnStop) {
             btnStop.addEventListener('click', function () {
                 shouldStop = true;
-                this.style.display = 'none';
+                this.classList.add('jw-hidden');
             });
         }
     }
@@ -156,10 +156,10 @@
         btnConvert.disabled = true;
         setChildText(btnConvert, '.jw-btn-text', jeexWebp.i18n.scanning);
 
-        if (btnStop) btnStop.style.display = 'inline-flex';
-        if (progress) progress.style.display = 'block';
-        if (badges) badges.style.display = 'flex';
-        if (log) { log.style.display = 'block'; log.innerHTML = ''; }
+        if (btnStop) btnStop.classList.remove('jw-hidden');
+        if (progress) progress.classList.remove('jw-hidden');
+        if (badges) badges.classList.remove('jw-hidden');
+        if (log) { log.classList.remove('jw-hidden'); log.innerHTML = ''; }
 
         updateBadges();
 
@@ -229,7 +229,7 @@
             }, 4000);
         }
 
-        if (btnStop) btnStop.style.display = 'none';
+        if (btnStop) btnStop.classList.add('jw-hidden');
 
         updateProgress(100, '');
 

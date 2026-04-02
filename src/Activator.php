@@ -18,7 +18,8 @@ class Activator {
         // Add index.php to output directory for security
         $indexFile = $pathResolver->getOutputDir() . 'index.php';
         if ( ! file_exists( $indexFile ) ) {
-            @file_put_contents( $indexFile, '<?php // Silence is golden.' );
+            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+            file_put_contents( $indexFile, '<?php // Silence is golden.' );
         }
 
         // Set up .htaccess rules

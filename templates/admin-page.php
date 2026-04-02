@@ -146,22 +146,22 @@ defined( 'ABSPATH' ) || exit;
                 <?php esc_html_e( 'Bulk Conversion', 'jeex-webp' ); ?>
             </h2>
 
-            <div class="jw-progress-wrap" id="jeex-progress" style="display:none;">
+            <div class="jw-progress-wrap" id="jeex-progress" class="jw-hidden">
                 <div class="jw-progress-header">
                     <span class="jw-progress-pct" id="jeex-progress-pct">0%</span>
                     <span class="jw-progress-text" id="jeex-progress-text"></span>
                 </div>
                 <div class="jw-progress-bar">
-                    <div class="jw-progress-fill" id="jeex-progress-fill" style="width:0%"></div>
+                    <div class="jw-progress-fill" id="jeex-progress-fill" data-width="0"></div>
                 </div>
-                <div class="jw-progress-badges" id="jeex-badges" style="display:none;">
+                <div class="jw-progress-badges" id="jeex-badges" class="jw-hidden">
                     <span class="jw-badge jw-badge--success"><span class="jw-badge-dot"></span> <span id="badge-converted">0</span> <?php esc_html_e( 'converted', 'jeex-webp' ); ?></span>
                     <span class="jw-badge jw-badge--warning"><span class="jw-badge-dot"></span> <span id="badge-skipped">0</span> <?php esc_html_e( 'skipped', 'jeex-webp' ); ?></span>
                     <span class="jw-badge jw-badge--danger"><span class="jw-badge-dot"></span> <span id="badge-failed">0</span> <?php esc_html_e( 'failed', 'jeex-webp' ); ?></span>
                 </div>
             </div>
 
-            <div class="jw-log" id="jeex-log" style="display:none;"></div>
+            <div class="jw-log" id="jeex-log" class="jw-hidden"></div>
 
             <div class="jw-actions">
                 <button class="jw-btn jw-btn--primary jw-btn--hero" id="jeex-btn-convert">
@@ -169,7 +169,7 @@ defined( 'ABSPATH' ) || exit;
                     <span class="jw-btn-text"><?php esc_html_e( 'Start Bulk Conversion', 'jeex-webp' ); ?></span>
                     <span class="jw-spinner"></span>
                 </button>
-                <button class="jw-btn jw-btn--danger" id="jeex-btn-stop" style="display:none;">
+                <button class="jw-btn jw-btn--danger" id="jeex-btn-stop" class="jw-hidden">
                     <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z" fill="currentColor"/></svg>
                     <?php esc_html_e( 'Stop', 'jeex-webp' ); ?>
                 </button>
@@ -435,7 +435,7 @@ defined( 'ABSPATH' ) || exit;
                 </span>
                 <?php esc_html_e( 'Nginx Configuration', 'jeex-webp' ); ?>
             </h2>
-            <p class="jw-field__desc" style="margin-top:0;margin-bottom:14px;">
+            <p class="jw-field__desc" class="jw-field__desc--top">
                 <?php esc_html_e( 'If your server uses Nginx, add this configuration to your server block:', 'jeex-webp' ); ?>
             </p>
             <?php $generator = new \JeexWebp\Serving\RewriteRulesGenerator( \JeexWebp\Plugin::getInstance()->getPathResolver() ); ?>

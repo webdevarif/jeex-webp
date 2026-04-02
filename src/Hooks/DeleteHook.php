@@ -46,7 +46,7 @@ class DeleteHook {
         foreach ( $formats as $format ) {
             $outputPath = $this->pathResolver->getOutputPath( $sourcePath, $format );
             if ( ! empty( $outputPath ) && file_exists( $outputPath ) ) {
-                @unlink( $outputPath );
+                wp_delete_file( $outputPath );
             }
         }
 
@@ -65,9 +65,9 @@ class DeleteHook {
 
         // Walk up and remove empty directories
         while ( $dir !== $outputDir && is_dir( $dir ) ) {
-            $items = @scandir( $dir );
+            $items = scandir( $dir ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
             if ( false === $items || count( $items ) <= 2 ) { // Only . and ..
-                @rmdir( $dir );
+                rmdir( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
                 $dir = dirname( $dir );
             } else {
                 break;

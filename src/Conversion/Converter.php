@@ -98,7 +98,7 @@ class Converter {
         // Handle "only serve if smaller" setting
         if ( $result->isSuccess() && $this->settings->get( 'only_smaller', true ) ) {
             if ( $result->getConvertedSize() >= $result->getOriginalSize() ) {
-                @unlink( $outputPath );
+                wp_delete_file( $outputPath );
                 return ConversionResult::skipped(
                     $sourcePath,
                     /* translators: %s: format name */

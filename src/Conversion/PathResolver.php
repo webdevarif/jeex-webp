@@ -155,10 +155,10 @@ class PathResolver {
 
         foreach ( $items as $item ) {
             if ( $item->isFile() ) {
-                @unlink( $item->getPathname() );
+                wp_delete_file( $item->getPathname() );
                 $count++;
             } elseif ( $item->isDir() ) {
-                @rmdir( $item->getPathname() );
+                rmdir( $item->getPathname() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
             }
         }
 
