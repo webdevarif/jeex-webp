@@ -103,109 +103,93 @@ class PassthruStrategy implements ServeStrategy {
         $outputDir  = addslashes( $this->pathResolver->getOutputDir() );
         $uploadsDir = addslashes( $this->pathResolver->getUploadsDir() );
 
-        $content = <<<'PHP'
-<?php
-/**
- * Jeex WebP Passthrough Server
- *
- * This file serves WebP/AVIF images when .htaccess rewrites are not available.
- * Generated automatically by Jeex WebP plugin.
- *
- * @package JeexWebp
- */
+        $content  = "<?php\n";
+        $content .= "/**\n";
+        $content .= " * Jeex WebP Passthrough Server\n";
+        $content .= " *\n";
+        $content .= " * Serves WebP/AVIF images when .htaccess rewrites are not available.\n";
+        $content .= " * Generated automatically by Jeex WebP plugin.\n";
+        $content .= " *\n";
+        $content .= " * @package JeexWebp\n";
+        $content .= " */\n\n";
 
-if ( ! isset( $_GET['src'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    http_response_code( 400 );
-    exit;
-}
+        $content .= 'if ( ! isset( $_GET[\'src\'] ) ) {' . "\n";
+        $content .= "    http_response_code( 400 );\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-// Sanitize: strip null bytes, parent traversal, and trim slashes.
-$src = isset( $_GET['src'] ) ? (string) $_GET['src'] : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-$src = str_replace( array( '..', "\0", "\r", "\n" ), '', $src );
-$src = preg_replace( '/[^a-zA-Z0-9_\-\/\.]/', '', $src );
-$src = ltrim( $src, '/' );
+        $content .= '$src = isset( $_GET[\'src\'] ) ? (string) $_GET[\'src\'] : \'\';' . "\n";
+        $content .= '$src = str_replace( array( \'..\', "\\0", "\\r", "\\n" ), \'\', $src );' . "\n";
+        $content .= '$src = preg_replace( \'/[^a-zA-Z0-9_\\-\\/\\.]/\', \'\', $src );' . "\n";
+        $content .= '$src = ltrim( $src, \'/\' );' . "\n\n";
 
-if ( empty( $src ) ) {
-    http_response_code( 400 );
-    exit;
-}
+        $content .= 'if ( empty( $src ) ) {' . "\n";
+        $content .= "    http_response_code( 400 );\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-$extensions = array( 'jpg', 'jpeg', 'png', 'gif' );
-$ext = strtolower( pathinfo( $src, PATHINFO_EXTENSION ) );
+        $content .= '$extensions = array( \'jpg\', \'jpeg\', \'png\', \'gif\' );' . "\n";
+        $content .= '$ext = strtolower( pathinfo( $src, PATHINFO_EXTENSION ) );' . "\n\n";
 
-if ( ! in_array( $ext, $extensions, true ) ) {
-    http_response_code( 403 );
-    exit;
-}
+        $content .= 'if ( ! in_array( $ext, $extensions, true ) ) {' . "\n";
+        $content .= "    http_response_code( 403 );\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-$accept = isset( $_SERVER['HTTP_ACCEPT'] ) ? (string) $_SERVER['HTTP_ACCEPT'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        $content .= '$accept = isset( $_SERVER[\'HTTP_ACCEPT\'] ) ? (string) $_SERVER[\'HTTP_ACCEPT\'] : \'\';' . "\n\n";
 
-PHP;
+        $content .= '$uploadsDir = \'' . $uploadsDir . "';\n";
+        $content .= '$outputDir  = \'' . $outputDir . "';\n\n";
 
-        $content .= <<<PHP
-\$uploadsDir = '{$uploadsDir}';
-\$outputDir  = '{$outputDir}';
-PHP;
+        $content .= '$sourcePath = $uploadsDir . $src;' . "\n";
+        $content .= '$avifPath   = $outputDir . $src . \'.avif\';' . "\n";
+        $content .= '$webpPath   = $outputDir . $src . \'.webp\';' . "\n\n";
 
-        $content .= <<<'PHP2'
+        $content .= '$realSource  = realpath( dirname( $sourcePath ) );' . "\n";
+        $content .= '$realUploads = realpath( $uploadsDir );' . "\n\n";
 
+        $content .= 'if ( false === $realSource || false === $realUploads || strpos( $realSource, $realUploads ) !== 0 ) {' . "\n";
+        $content .= "    http_response_code( 403 );\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-$sourcePath = $uploadsDir . $src;
-$avifPath   = $outputDir . $src . '.avif';
-$webpPath   = $outputDir . $src . '.webp';
+        $content .= 'if ( strpos( $accept, \'image/avif\' ) !== false && file_exists( $avifPath ) ) {' . "\n";
+        $content .= '    header( \'Content-Type: image/avif\' );' . "\n";
+        $content .= '    header( \'Content-Length: \' . filesize( $avifPath ) );' . "\n";
+        $content .= '    header( \'Cache-Control: public, max-age=31536000\' );' . "\n";
+        $content .= '    header( \'Vary: Accept\' );' . "\n";
+        $content .= '    header( \'X-Jeex-WebP: avif\' );' . "\n";
+        $content .= '    readfile( $avifPath );' . "\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-// Path traversal check.
-$realSource  = realpath( dirname( $sourcePath ) );
-$realUploads = realpath( $uploadsDir );
+        $content .= 'if ( strpos( $accept, \'image/webp\' ) !== false && file_exists( $webpPath ) ) {' . "\n";
+        $content .= '    header( \'Content-Type: image/webp\' );' . "\n";
+        $content .= '    header( \'Content-Length: \' . filesize( $webpPath ) );' . "\n";
+        $content .= '    header( \'Cache-Control: public, max-age=31536000\' );' . "\n";
+        $content .= '    header( \'Vary: Accept\' );' . "\n";
+        $content .= '    header( \'X-Jeex-WebP: webp\' );' . "\n";
+        $content .= '    readfile( $webpPath );' . "\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-if ( false === $realSource || false === $realUploads || strpos( $realSource, $realUploads ) !== 0 ) {
-    http_response_code( 403 );
-    exit;
-}
+        $content .= 'if ( file_exists( $sourcePath ) ) {' . "\n";
+        $content .= '    $mimeMap = array(' . "\n";
+        $content .= "        'jpg'  => 'image/jpeg',\n";
+        $content .= "        'jpeg' => 'image/jpeg',\n";
+        $content .= "        'png'  => 'image/png',\n";
+        $content .= "        'gif'  => 'image/gif',\n";
+        $content .= "    );\n";
+        $content .= '    $mime = isset( $mimeMap[ $ext ] ) ? $mimeMap[ $ext ] : \'application/octet-stream\';' . "\n";
+        $content .= '    header( \'Content-Type: \' . $mime );' . "\n";
+        $content .= '    header( \'Content-Length: \' . filesize( $sourcePath ) );' . "\n";
+        $content .= '    header( \'Cache-Control: public, max-age=31536000\' );' . "\n";
+        $content .= '    readfile( $sourcePath );' . "\n";
+        $content .= "    exit;\n";
+        $content .= "}\n\n";
 
-// Serve AVIF first if browser supports it and file exists.
-if ( strpos( $accept, 'image/avif' ) !== false && file_exists( $avifPath ) ) {
-    header( 'Content-Type: image/avif' );
-    header( 'Content-Length: ' . filesize( $avifPath ) );
-    header( 'Cache-Control: public, max-age=31536000' );
-    header( 'Vary: Accept' );
-    header( 'X-Jeex-WebP: avif' );
-    readfile( $avifPath );
-    exit;
-}
-
-// Serve WebP if browser supports it and file exists.
-if ( strpos( $accept, 'image/webp' ) !== false && file_exists( $webpPath ) ) {
-    header( 'Content-Type: image/webp' );
-    header( 'Content-Length: ' . filesize( $webpPath ) );
-    header( 'Cache-Control: public, max-age=31536000' );
-    header( 'Vary: Accept' );
-    header( 'X-Jeex-WebP: webp' );
-    readfile( $webpPath );
-    exit;
-}
-
-// Serve original if it exists.
-if ( file_exists( $sourcePath ) ) {
-    $mimeMap = array(
-        'jpg'  => 'image/jpeg',
-        'jpeg' => 'image/jpeg',
-        'png'  => 'image/png',
-        'gif'  => 'image/gif',
-    );
-
-    $mime = isset( $mimeMap[ $ext ] ) ? $mimeMap[ $ext ] : 'application/octet-stream';
-
-    header( 'Content-Type: ' . $mime );
-    header( 'Content-Length: ' . filesize( $sourcePath ) );
-    header( 'Cache-Control: public, max-age=31536000' );
-    readfile( $sourcePath );
-    exit;
-}
-
-http_response_code( 404 );
-exit;
-PHP2;
+        $content .= "http_response_code( 404 );\n";
+        $content .= "exit;\n";
 
         $filepath = $this->getPassthruFilePath();
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
