@@ -28,6 +28,19 @@ class AdminPage {
     }
 
     /**
+     * Add Settings link on Plugins page.
+     */
+    public function addSettingsLink( array $links ): array {
+        $settings_link = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url( admin_url( 'tools.php?page=jeex-webp' ) ),
+            esc_html__( 'Settings', 'jeex-webp' )
+        );
+        array_unshift( $links, $settings_link );
+        return $links;
+    }
+
+    /**
      * Enqueue admin assets only on plugin page.
      */
     public function enqueueAssets( string $hook ): void {

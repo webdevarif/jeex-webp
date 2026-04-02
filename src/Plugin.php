@@ -63,6 +63,7 @@ final class Plugin {
             $adminPage = new AdminPage( $this->settings );
             add_action( 'admin_menu', [ $adminPage, 'register' ] );
             add_action( 'admin_enqueue_scripts', [ $adminPage, 'enqueueAssets' ] );
+            add_filter( 'plugin_action_links_' . JEEX_WEBP_BASENAME, [ $adminPage, 'addSettingsLink' ] );
 
             // AJAX handlers
             $fileFinder = new FileFinder( $this->pathResolver, $this->settings );
