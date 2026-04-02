@@ -115,10 +115,11 @@
     backdrop-filter: blur(4px);
 }
 
-.jw-header-icon svg {
-    width: 24px;
-    height: 24px;
-    fill: #fff;
+.jw-header-icon svg,
+.jw-header-icon img {
+    width: 30px;
+    height: 30px;
+    display: block;
 }
 
 .jw-title {

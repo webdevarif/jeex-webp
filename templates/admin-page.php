@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
     <div class="jw-header">
         <div class="jw-header-left">
             <div class="jw-header-icon">
-                <svg viewBox="0 0 24 24"><path d="M21 5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5zm-4.37 10.37l-2.38-2.38L12 15.25 8.62 11.87l-2.37 2.38V5h11.5v10.37z"/></svg>
+                <img src="<?php echo esc_url( JEEX_WEBP_URL . 'assets/images/JeexWebp-Light.svg' ); ?>" alt="Jeex WebP" width="30" height="30">
             </div>
             <div>
                 <h1 class="jw-title"><?php esc_html_e( 'Jeex WebP', 'jeex-webp' ); ?></h1>
