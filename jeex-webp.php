@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Jeex WebP
- * Plugin URI:  https://jeex.dev/webp
+ * Plugin URI:  https://jeexwebp.webdevarif.com
  * Description: Convert images to WebP for faster loading. Automatic conversion on upload + bulk converter with Imagick & GD support.
  * Version:     1.0.0
  * Author:      Jeex
- * Author URI:  https://jeex.dev
+ * Author URI:  https://webdevarif.com
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: jeex-webp
