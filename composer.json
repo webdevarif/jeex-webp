@@ -1,0 +1,17 @@
+{
+    "name": "jeex/jeex-webp",
+    "description": "Convert images to WebP for faster loading.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "JeexWebp\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
