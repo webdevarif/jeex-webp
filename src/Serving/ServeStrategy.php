@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Serving;
 
+defined( 'ABSPATH' ) || exit;
+
 interface ServeStrategy {
 
     /**

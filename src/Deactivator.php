@@ -2,6 +2,8 @@
 
 namespace JeexWebp;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\PathResolver;
 use JeexWebp\Hooks\CronHook;
 use JeexWebp\Serving\HtaccessStrategy;

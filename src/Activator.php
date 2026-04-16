@@ -2,6 +2,8 @@
 
 namespace JeexWebp;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\PathResolver;
 use JeexWebp\Serving\HtaccessStrategy;
 use JeexWebp\Settings\SettingsManager;
@@ -18,8 +20,14 @@ class Activator {
         // Add index.php to output directory for security
         $indexFile = $pathResolver->getOutputDir() . 'index.php';
         if ( ! file_exists( $indexFile ) ) {
-            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-            file_put_contents( $indexFile, '<?php // Silence is golden.' );
+            global $wp_filesystem;
+
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+
+            if ( $wp_filesystem instanceof \WP_Filesystem_Base ) {
+                $wp_filesystem->put_contents( $indexFile, '<?php // Silence is golden.', FS_CHMOD_FILE );
+            }
         }
 
         // Set up .htaccess rules

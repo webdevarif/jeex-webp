@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Conversion\Format;
 
+defined( 'ABSPATH' ) || exit;
+
 interface FormatInterface {
 
     public function getName(): string;

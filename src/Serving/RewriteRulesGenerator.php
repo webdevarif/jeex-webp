@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Serving;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\PathResolver;
 
 class RewriteRulesGenerator {

@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Admin;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\Method\MethodFactory;
 use JeexWebp\Settings\SettingsManager;
 
@@ -76,6 +78,7 @@ class AdminPage {
                 'saving'         => __( 'Saving settings...', 'jeex-webp' ),
                 'saved'          => __( 'Settings saved!', 'jeex-webp' ),
                 'noImages'       => __( 'No unconverted images found.', 'jeex-webp' ),
+                'startConversion' => __( 'Start Bulk Conversion', 'jeex-webp' ),
             ],
         ] );
     }
@@ -104,25 +107,35 @@ class AdminPage {
             return;
         }
 
-        $data = [
-            'quality'        => isset( $_POST['quality'] ) ? absint( $_POST['quality'] ) : 80,
-            'method'         => isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : 'auto',
-            'output_format'  => isset( $_POST['output_format'] ) ? sanitize_text_field( wp_unslash( $_POST['output_format'] ) ) : 'webp',
-            'auto_convert'   => ! empty( $_POST['auto_convert'] ),
-            'only_smaller'   => ! empty( $_POST['only_smaller'] ),
-            'keep_metadata'  => ! empty( $_POST['keep_metadata'] ),
-            'serving_mode'   => isset( $_POST['serving_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['serving_mode'] ) ) : 'auto',
-            'directories'    => isset( $_POST['directories'] ) ? array_map( 'sanitize_text_field', (array) $_POST['directories'] ) : [ 'uploads' ],
-            'exclude_dirs'   => isset( $_POST['exclude_dirs'] ) ? sanitize_text_field( wp_unslash( $_POST['exclude_dirs'] ) ) : '',
-            'cron_enabled'   => ! empty( $_POST['cron_enabled'] ),
-            'cron_batch_size' => isset( $_POST['cron_batch_size'] ) ? absint( $_POST['cron_batch_size'] ) : 10,
-        ];
+        // Detect which form was submitted.
+        $section = isset( $_POST['jeex_webp_section'] ) ? sanitize_key( $_POST['jeex_webp_section'] ) : 'general';
+
+        if ( 'advanced' === $section ) {
+            $data = [
+                'cron_enabled'    => ! empty( $_POST['cron_enabled'] ),
+                'cron_batch_size' => isset( $_POST['cron_batch_size'] ) ? absint( $_POST['cron_batch_size'] ) : 10,
+            ];
+        } else {
+            $data = [
+                'quality'        => isset( $_POST['quality'] ) ? absint( $_POST['quality'] ) : 80,
+                'method'         => isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : 'auto',
+                'output_format'  => isset( $_POST['output_format'] ) ? sanitize_text_field( wp_unslash( $_POST['output_format'] ) ) : 'webp',
+                'auto_convert'   => ! empty( $_POST['auto_convert'] ),
+                'only_smaller'   => ! empty( $_POST['only_smaller'] ),
+                'keep_metadata'  => ! empty( $_POST['keep_metadata'] ),
+                'serving_mode'   => isset( $_POST['serving_mode'] ) ? sanitize_text_field( wp_unslash( $_POST['serving_mode'] ) ) : 'auto',
+                'directories'    => isset( $_POST['directories'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['directories'] ) ) : [ 'uploads' ],
+                'exclude_dirs'   => isset( $_POST['exclude_dirs'] ) ? sanitize_text_field( wp_unslash( $_POST['exclude_dirs'] ) ) : '',
+            ];
+        }
 
         $this->settings->saveAll( $data );
 
         // Regenerate htaccess if serving mode changed
-        $htaccess = new \JeexWebp\Serving\HtaccessStrategy( new \JeexWebp\Conversion\PathResolver( $this->settings ) );
-        $htaccess->activate();
+        if ( 'general' === $section ) {
+            $htaccess = new \JeexWebp\Serving\HtaccessStrategy( new \JeexWebp\Conversion\PathResolver( $this->settings ) );
+            $htaccess->activate();
+        }
 
         add_settings_error( 'jeex_webp', 'settings_saved', __( 'Settings saved.', 'jeex-webp' ), 'success' );
     }

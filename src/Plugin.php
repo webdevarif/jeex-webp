@@ -2,6 +2,8 @@
 
 namespace JeexWebp;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Admin\AdminPage;
 use JeexWebp\Admin\AdminNotice;
 use JeexWebp\Admin\Ajax\BulkConvertHandler;
@@ -90,8 +92,9 @@ final class Plugin {
         $deleteHook = new DeleteHook( $this->pathResolver );
         add_action( 'delete_attachment', [ $deleteHook, 'onDelete' ] );
 
-        // Cron
+        // Cron — register schedule early so WP knows about the interval before scheduling.
         $cronHook = new CronHook( $this->converter, new FileFinder( $this->pathResolver, $this->settings ), $this->settings );
+        $cronHook->registerSchedule();
         add_action( 'jeex_webp_cron_convert', [ $cronHook, 'run' ] );
         add_action( 'init', [ $cronHook, 'scheduleIfEnabled' ] );
 

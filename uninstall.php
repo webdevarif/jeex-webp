@@ -7,6 +7,11 @@
 
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
+// Initialize WP_Filesystem.
+require_once ABSPATH . 'wp-admin/includes/file.php';
+WP_Filesystem();
+global $wp_filesystem;
+
 // Delete all plugin options
 $options = [
     'jeex_webp_quality',
@@ -48,12 +53,11 @@ $htaccessFiles = array(
 );
 
 foreach ( $htaccessFiles as $file ) {
-    if ( ! file_exists( $file ) ) {
+    if ( ! $wp_filesystem instanceof \WP_Filesystem_Base || ! $wp_filesystem->exists( $file ) ) {
         continue;
     }
 
-    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-    $content = file_get_contents( $file );
+    $content = $wp_filesystem->get_contents( $file );
     if ( false === $content ) {
         continue;
     }
@@ -64,8 +68,7 @@ foreach ( $htaccessFiles as $file ) {
     if ( empty( $cleaned ) ) {
         wp_delete_file( $file );
     } else {
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-        file_put_contents( $file, $cleaned . "\n" );
+        $wp_filesystem->put_contents( $file, $cleaned . "\n", FS_CHMOD_FILE );
     }
 }
 
@@ -79,10 +82,10 @@ foreach ( $htaccessFiles as $file ) {
 //     );
 //     foreach ( $iterator as $item ) {
 //         if ( $item->isFile() ) {
-//             @unlink( $item->getPathname() );
+//             wp_delete_file( $item->getPathname() );
 //         } elseif ( $item->isDir() ) {
-//             @rmdir( $item->getPathname() );
+//             $wp_filesystem->rmdir( $item->getPathname() );
 //         }
 //     }
-//     @rmdir( $outputDir );
+//     $wp_filesystem->rmdir( $outputDir );
 // }

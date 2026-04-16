@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Conversion;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Settings\SettingsManager;
 
 class PathResolver {
@@ -147,6 +149,11 @@ class PathResolver {
     }
 
     private function deleteDirectoryContents( string $dir ): int {
+        global $wp_filesystem;
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        WP_Filesystem();
+
         $count = 0;
         $items = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator( $dir, \RecursiveDirectoryIterator::SKIP_DOTS ),
@@ -157,8 +164,8 @@ class PathResolver {
             if ( $item->isFile() ) {
                 wp_delete_file( $item->getPathname() );
                 $count++;
-            } elseif ( $item->isDir() ) {
-                rmdir( $item->getPathname() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+            } elseif ( $item->isDir() && $wp_filesystem instanceof \WP_Filesystem_Base ) {
+                $wp_filesystem->rmdir( $item->getPathname() );
             }
         }
 

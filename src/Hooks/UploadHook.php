@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Hooks;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\Converter;
 use JeexWebp\Conversion\PathResolver;
 

@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Settings;
 
+defined( 'ABSPATH' ) || exit;
+
 class SettingsManager {
 
     private const PREFIX = 'jeex_webp_';

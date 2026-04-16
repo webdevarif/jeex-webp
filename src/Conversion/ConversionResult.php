@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Conversion;
 
+defined( 'ABSPATH' ) || exit;
+
 class ConversionResult {
 
     public const STATUS_SUCCESS = 'success';

@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Serving;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\PathResolver;
 
 class PassthruStrategy implements ServeStrategy {
@@ -89,7 +91,7 @@ class PassthruStrategy implements ServeStrategy {
                 header( 'Vary: Accept' );
                 header( 'X-Jeex-WebP: ' . $fmt['format'] );
 
-                readfile( $outputPath );
+                readfile( $outputPath ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile
                 exit;
             }
         }
@@ -100,6 +102,12 @@ class PassthruStrategy implements ServeStrategy {
     }
 
     private function generatePassthruFile(): bool {
+        global $wp_filesystem;
+
+        if ( ! $this->initFilesystem() ) {
+            return false;
+        }
+
         $outputDir  = addslashes( $this->pathResolver->getOutputDir() );
         $uploadsDir = addslashes( $this->pathResolver->getUploadsDir() );
 
@@ -192,8 +200,20 @@ class PassthruStrategy implements ServeStrategy {
         $content .= "exit;\n";
 
         $filepath = $this->getPassthruFilePath();
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-        $result = file_put_contents( $filepath, $content );
-        return false !== $result;
+        return $wp_filesystem->put_contents( $filepath, $content, FS_CHMOD_FILE );
+    }
+
+    /**
+     * Initialize the WP_Filesystem.
+     */
+    private function initFilesystem(): bool {
+        global $wp_filesystem;
+
+        if ( $wp_filesystem instanceof \WP_Filesystem_Base ) {
+            return true;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        return WP_Filesystem();
     }
 }

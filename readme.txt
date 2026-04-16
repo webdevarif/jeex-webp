@@ -1,5 +1,5 @@
 === Jeex WebP ===
-Contributors: jeex
+Contributors: webdevarif
 Tags: webp, image optimization, performance, compression, convert
 Requires at least: 6.0
 Tested up to: 6.9

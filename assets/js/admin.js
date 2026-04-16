@@ -225,7 +225,7 @@
             setChildText(btnConvert, '.jw-btn-text', message || jeexWebp.i18n.complete);
 
             setTimeout(function () {
-                setChildText(btnConvert, '.jw-btn-text', 'Start Bulk Conversion');
+                setChildText(btnConvert, '.jw-btn-text', jeexWebp.i18n.startConversion);
             }, 4000);
         }
 

@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Serving;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\PathResolver;
 
 class HtaccessStrategy implements ServeStrategy {
@@ -58,14 +60,15 @@ class HtaccessStrategy implements ServeStrategy {
     }
 
     public function isActive(): bool {
+        global $wp_filesystem;
+
         $htaccess = $this->pathResolver->getUploadsDir() . '.htaccess';
 
-        if ( ! file_exists( $htaccess ) ) {
+        if ( ! $this->initFilesystem() || ! $wp_filesystem->exists( $htaccess ) ) {
             return false;
         }
 
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-        $content = file_get_contents( $htaccess );
+        $content = $wp_filesystem->get_contents( $htaccess );
         return false !== $content && false !== strpos( $content, '# BEGIN Jeex WebP' );
     }
 
@@ -77,11 +80,16 @@ class HtaccessStrategy implements ServeStrategy {
     }
 
     private function addRulesToFile( string $filepath, string $rules ): bool {
+        global $wp_filesystem;
+
+        if ( ! $this->initFilesystem() ) {
+            return false;
+        }
+
         $content = '';
 
-        if ( file_exists( $filepath ) ) {
-            // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-            $content = file_get_contents( $filepath );
+        if ( $wp_filesystem->exists( $filepath ) ) {
+            $content = $wp_filesystem->get_contents( $filepath );
             if ( false === $content ) {
                 return false;
             }
@@ -92,17 +100,21 @@ class HtaccessStrategy implements ServeStrategy {
 
         $content = trim( $rules ) . "\n\n" . trim( $content );
 
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-        return false !== file_put_contents( $filepath, trim( $content ) . "\n" );
+        return $wp_filesystem->put_contents( $filepath, trim( $content ) . "\n", FS_CHMOD_FILE );
     }
 
     private function removeRulesFromFile( string $filepath ): bool {
-        if ( ! file_exists( $filepath ) ) {
+        global $wp_filesystem;
+
+        if ( ! $this->initFilesystem() ) {
+            return false;
+        }
+
+        if ( ! $wp_filesystem->exists( $filepath ) ) {
             return true;
         }
 
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-        $content = file_get_contents( $filepath );
+        $content = $wp_filesystem->get_contents( $filepath );
         if ( false === $content ) {
             return false;
         }
@@ -115,12 +127,25 @@ class HtaccessStrategy implements ServeStrategy {
             return true;
         }
 
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-        return false !== file_put_contents( $filepath, $cleaned . "\n" );
+        return $wp_filesystem->put_contents( $filepath, $cleaned . "\n", FS_CHMOD_FILE );
     }
 
     private function stripExistingRules( string $content ): string {
         $pattern = '/[\r\n]*# BEGIN Jeex WebP.*?# END Jeex WebP[\r\n]*/s';
         return preg_replace( $pattern, "\n", $content );
+    }
+
+    /**
+     * Initialize the WP_Filesystem.
+     */
+    private function initFilesystem(): bool {
+        global $wp_filesystem;
+
+        if ( $wp_filesystem instanceof \WP_Filesystem_Base ) {
+            return true;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        return WP_Filesystem();
     }
 }

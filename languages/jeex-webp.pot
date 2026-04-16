@@ -1,0 +1,431 @@
+# Copyright (C) 2024 Jeex
+# This file is distributed under the same license as the Jeex WebP plugin.
+# Jeex <https://webdevarif.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Jeex WebP 1.0.0\n"
+"Report-Msgid-Bugs-To: https://webdevarif.com/products/jeex-webp\n"
+"POT-Creation-Date: 2026-04-16T00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2026-04-16T00:00:00+00:00\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Jeex WebP POT Generator\n"
+"X-Domain: jeex-webp\n"
+
+#: src/Admin/AdminPage.php:24
+#: src/Admin/AdminPage.php:25
+msgid "Jeex WebP"
+msgstr ""
+
+#: src/Admin/AdminPage.php:39
+msgid "Settings"
+msgstr ""
+
+#: src/Admin/AdminPage.php:73
+msgid "Scanning images..."
+msgstr ""
+
+#: src/Admin/AdminPage.php:74
+msgid "Converting images..."
+msgstr ""
+
+#: src/Admin/AdminPage.php:75
+msgid "Conversion complete!"
+msgstr ""
+
+#: src/Admin/AdminPage.php:76
+msgid "An error occurred."
+msgstr ""
+
+#: src/Admin/AdminPage.php:77
+msgid "Are you sure you want to delete all converted WebP files? This cannot be undone."
+msgstr ""
+
+#: src/Admin/AdminPage.php:78
+msgid "Cache cleared successfully."
+msgstr ""
+
+#: src/Admin/AdminPage.php:79
+msgid "Saving settings..."
+msgstr ""
+
+#: src/Admin/AdminPage.php:80
+msgid "Settings saved!"
+msgstr ""
+
+#: src/Admin/AdminPage.php:81
+msgid "No unconverted images found."
+msgstr ""
+
+#: src/Admin/AdminPage.php:82
+msgid "Start Bulk Conversion"
+msgstr ""
+
+#: src/Admin/AdminPage.php:140
+msgid "Settings saved."
+msgstr ""
+
+#: src/Admin/AdminNotice.php:44
+msgid "Jeex WebP: No image conversion library available. Please install the Imagick or GD PHP extension with WebP support."
+msgstr ""
+
+#: src/Admin/Ajax/BulkConvertHandler.php:27
+#: src/Admin/Ajax/DeleteCacheHandler.php:21
+#: src/Admin/Ajax/StatsHandler.php:24
+msgid "Unauthorized."
+msgstr ""
+
+#: src/Admin/Ajax/DeleteCacheHandler.php:29
+#. translators: %d: number of files deleted
+msgid "%d converted files deleted."
+msgstr ""
+
+#: src/Conversion/Converter.php:30
+msgid "No conversion method available."
+msgstr ""
+
+#: src/Conversion/Converter.php:34
+msgid "Unsupported file format."
+msgstr ""
+
+#: src/Conversion/Converter.php:38
+#: src/Conversion/Method/GdMethod.php:42
+#: src/Conversion/Method/ImagickMethod.php:44
+msgid "Source file not found."
+msgstr ""
+
+#: src/Conversion/Converter.php:43
+msgid "Conversion limit reached."
+msgstr ""
+
+#: src/Conversion/Converter.php:47
+msgid "Skipped by filter."
+msgstr ""
+
+#: src/Conversion/Converter.php:63
+msgid "No formats to convert."
+msgstr ""
+
+#: src/Conversion/Converter.php:75
+#. translators: %s: format name
+msgid "%s not supported by current method."
+msgstr ""
+
+#: src/Conversion/Converter.php:82
+msgid "Cannot resolve output path."
+msgstr ""
+
+#: src/Conversion/Converter.php:87
+msgid "Already converted."
+msgstr ""
+
+#: src/Conversion/Converter.php:107
+#. translators: %s: format name
+msgid "%s file is not smaller than original."
+msgstr ""
+
+#: src/Conversion/Method/GdMethod.php:47
+msgid "AVIF is not supported by your GD library."
+msgstr ""
+
+#: src/Conversion/Method/GdMethod.php:52
+msgid "Cannot read image info."
+msgstr ""
+
+#: src/Conversion/Method/GdMethod.php:58
+msgid "Image too large for available memory."
+msgstr ""
+
+#: src/Conversion/Method/GdMethod.php:64
+msgid "Unsupported image format."
+msgstr ""
+
+#: src/Conversion/Method/GdMethod.php:70
+msgid "Animated GIF skipped."
+msgstr ""
+
+#: src/Conversion/Method/GdMethod.php:105
+#. translators: %s: output format name
+msgid "%s conversion failed."
+msgstr ""
+
+#: src/Conversion/Method/ImagickMethod.php:49
+msgid "AVIF is not supported by your Imagick library."
+msgstr ""
+
+#: src/Conversion/Method/ImagickMethod.php:58
+msgid "Animated image skipped."
+msgstr ""
+
+#: src/Conversion/Method/ImagickMethod.php:99
+msgid "Output file was not created."
+msgstr ""
+
+#: src/Hooks/CronHook.php:51
+msgid "Every 5 Minutes (Jeex WebP)"
+msgstr ""
+
+#: templates/admin-page.php:21
+msgid "Jeex WebP"
+msgstr ""
+
+#: templates/admin-page.php:38
+msgid "Dashboard"
+msgstr ""
+
+#: templates/admin-page.php:42
+msgid "Settings"
+msgstr ""
+
+#: templates/admin-page.php:46
+msgid "Advanced"
+msgstr ""
+
+#: templates/admin-page.php:59
+msgid "Server Status"
+msgstr ""
+
+#: templates/admin-page.php:72
+msgid "Not installed"
+msgstr ""
+
+#: templates/admin-page.php:87
+msgid "AVIF Support"
+msgstr ""
+
+#: templates/admin-page.php:88
+msgid "Ready"
+msgstr ""
+
+#: templates/admin-page.php:88
+msgid "Requires PHP 8.1+ with GD AVIF"
+msgstr ""
+
+#: templates/admin-page.php:101
+msgid ".htaccess Rewrites"
+msgstr ""
+
+#: templates/admin-page.php:102
+msgid "Active"
+msgstr ""
+
+#: templates/admin-page.php:102
+msgid "Not configured"
+msgstr ""
+
+#: templates/admin-page.php:110
+msgid "Total images in uploads folder"
+msgstr ""
+
+#: templates/admin-page.php:115
+msgid "Total Images"
+msgstr ""
+
+#: templates/admin-page.php:117
+msgid "Successfully converted images"
+msgstr ""
+
+#: templates/admin-page.php:122
+msgid "Converted"
+msgstr ""
+
+#: templates/admin-page.php:124
+msgid "Images waiting for conversion"
+msgstr ""
+
+#: templates/admin-page.php:129
+msgid "Remaining"
+msgstr ""
+
+#: templates/admin-page.php:131
+msgid "Total disk space saved"
+msgstr ""
+
+#: templates/admin-page.php:136
+msgid "Space Saved"
+msgstr ""
+
+#: templates/admin-page.php:146
+msgid "Bulk Conversion"
+msgstr ""
+
+#: templates/admin-page.php:158
+msgid "converted"
+msgstr ""
+
+#: templates/admin-page.php:159
+msgid "skipped"
+msgstr ""
+
+#: templates/admin-page.php:160
+msgid "failed"
+msgstr ""
+
+#: templates/admin-page.php:169
+msgid "Start Bulk Conversion"
+msgstr ""
+
+#: templates/admin-page.php:174
+msgid "Stop"
+msgstr ""
+
+#: templates/admin-page.php:185
+msgid "Quick Actions"
+msgstr ""
+
+#: templates/admin-page.php:190
+msgid "Clear WebP Cache"
+msgstr ""
+
+#: templates/admin-page.php:194
+msgid "Regenerate .htaccess"
+msgstr ""
+
+#: templates/admin-page.php:212
+msgid "Output Format"
+msgstr ""
+
+#: templates/admin-page.php:224
+msgid "Smaller than JPEG/PNG. All modern browsers supported."
+msgstr ""
+
+#: templates/admin-page.php:230
+msgid "~50% smaller than JPEG. Best compression available."
+msgstr ""
+
+#: templates/admin-page.php:232
+#: templates/admin-page.php:241
+#: templates/admin-page.php:288
+msgid "Not Available"
+msgstr ""
+
+#: templates/admin-page.php:239
+msgid "AVIF for modern browsers, WebP fallback for older ones."
+msgstr ""
+
+#: templates/admin-page.php:253
+msgid "Quality & Method"
+msgstr ""
+
+#: templates/admin-page.php:257
+msgid "Conversion Quality"
+msgstr ""
+
+#: templates/admin-page.php:265
+msgid "Smaller File"
+msgstr ""
+
+#: templates/admin-page.php:267
+msgid "Better Quality"
+msgstr ""
+
+#: templates/admin-page.php:270
+msgid "Recommended: 75-85% for best balance of quality and file size."
+msgstr ""
+
+#: templates/admin-page.php:276
+msgid "Conversion Method"
+msgstr ""
+
+#: templates/admin-page.php:279
+msgid "Auto (Recommended)"
+msgstr ""
+
+#: templates/admin-page.php:303
+msgid "Behavior"
+msgstr ""
+
+#: templates/admin-page.php:310
+msgid "Auto-convert on upload"
+msgstr ""
+
+#: templates/admin-page.php:311
+msgid "Automatically convert new images when uploaded to Media Library"
+msgstr ""
+
+#: templates/admin-page.php:318
+msgid "Only serve if smaller"
+msgstr ""
+
+#: templates/admin-page.php:319
+msgid "Skip serving converted file if it is larger than the original"
+msgstr ""
+
+#: templates/admin-page.php:326
+msgid "Keep image metadata"
+msgstr ""
+
+#: templates/admin-page.php:327
+msgid "Preserve EXIF, IPTC and other metadata in converted images"
+msgstr ""
+
+#: templates/admin-page.php:340
+msgid "Serving"
+msgstr ""
+
+#: templates/admin-page.php:344
+msgid "Image Serving Mode"
+msgstr ""
+
+#: templates/admin-page.php:347
+msgid "Auto (Recommended)"
+msgstr ""
+
+#: templates/admin-page.php:350
+msgid ".htaccess (Apache)"
+msgstr ""
+
+#: templates/admin-page.php:353
+msgid "PHP Passthru (Nginx / Fallback)"
+msgstr ""
+
+#: templates/admin-page.php:361
+msgid "Supported Directories"
+msgstr ""
+
+#: templates/admin-page.php:377
+msgid "Excluded Directories"
+msgstr ""
+
+#: templates/admin-page.php:381
+msgid "Comma-separated directory names to skip during conversion."
+msgstr ""
+
+#: templates/admin-page.php:387
+#: templates/admin-page.php:427
+msgid "Save Settings"
+msgstr ""
+
+#: templates/admin-page.php:399
+msgid "Background Conversion"
+msgstr ""
+
+#: templates/admin-page.php:410
+msgid "Enable background conversion"
+msgstr ""
+
+#: templates/admin-page.php:411
+msgid "Automatically converts images in the background every 5 minutes via WP Cron"
+msgstr ""
+
+#: templates/admin-page.php:418
+msgid "Batch Size per Cron Run"
+msgstr ""
+
+#: templates/admin-page.php:422
+msgid "Number of images to convert per cron execution (1-50)."
+msgstr ""
+
+#: templates/admin-page.php:438
+msgid "Nginx Configuration"
+msgstr ""
+
+#: templates/admin-page.php:441
+msgid "If your server uses Nginx, add this configuration to your server block:"
+msgstr ""

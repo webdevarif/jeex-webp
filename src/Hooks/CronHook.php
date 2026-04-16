@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Hooks;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\Converter;
 use JeexWebp\Conversion\FileFinder;
 use JeexWebp\Settings\SettingsManager;
@@ -21,6 +23,13 @@ class CronHook {
     }
 
     /**
+     * Register the custom cron schedule. Must be called early, before scheduling.
+     */
+    public function registerSchedule(): void {
+        add_filter( 'cron_schedules', [ $this, 'addCronSchedule' ] );
+    }
+
+    /**
      * Schedule cron event if background conversion is enabled.
      */
     public function scheduleIfEnabled(): void {
@@ -28,13 +37,9 @@ class CronHook {
 
         if ( $enabled && ! wp_next_scheduled( self::CRON_HOOK ) ) {
             wp_schedule_event( time(), 'jeex_webp_interval', self::CRON_HOOK );
-            add_filter( 'cron_schedules', [ $this, 'addCronSchedule' ] );
         } elseif ( ! $enabled && wp_next_scheduled( self::CRON_HOOK ) ) {
             wp_clear_scheduled_hook( self::CRON_HOOK );
         }
-
-        // Always register the schedule so WP knows about it
-        add_filter( 'cron_schedules', [ $this, 'addCronSchedule' ] );
     }
 
     /**

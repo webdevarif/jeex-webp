@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Admin\Ajax;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\Converter;
 use JeexWebp\Conversion\FileFinder;
 

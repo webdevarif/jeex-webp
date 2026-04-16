@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Hooks;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\PathResolver;
 
 class DeleteHook {
@@ -55,8 +57,17 @@ class DeleteHook {
     }
 
     private function cleanupEmptyDirs( string $sourcePath ): void {
+        global $wp_filesystem;
+
         $outputPath = $this->pathResolver->getOutputPath( $sourcePath, 'webp' );
         if ( empty( $outputPath ) ) {
+            return;
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        WP_Filesystem();
+
+        if ( ! $wp_filesystem instanceof \WP_Filesystem_Base ) {
             return;
         }
 
@@ -64,10 +75,10 @@ class DeleteHook {
         $outputDir = rtrim( $this->pathResolver->getOutputDir(), '/' );
 
         // Walk up and remove empty directories
-        while ( $dir !== $outputDir && is_dir( $dir ) ) {
-            $items = scandir( $dir ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-            if ( false === $items || count( $items ) <= 2 ) { // Only . and ..
-                rmdir( $dir ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+        while ( $dir !== $outputDir && $wp_filesystem->is_dir( $dir ) ) {
+            $dirlist = $wp_filesystem->dirlist( $dir );
+            if ( empty( $dirlist ) ) {
+                $wp_filesystem->rmdir( $dir );
                 $dir = dirname( $dir );
             } else {
                 break;

@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Conversion;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Settings\SettingsManager;
 
 class FileFinder {

@@ -2,6 +2,8 @@
 
 namespace JeexWebp\Admin;
 
+defined( 'ABSPATH' ) || exit;
+
 use JeexWebp\Conversion\Method\MethodFactory;
 use JeexWebp\Settings\SettingsManager;
 
