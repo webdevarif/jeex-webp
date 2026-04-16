@@ -116,12 +116,19 @@ class RewriteRulesGenerator {
      */
     private function getRelativeOutputPath(): string {
         $outputDir = wp_normalize_path( $this->pathResolver->getOutputDir() );
-        $docRoot   = wp_normalize_path( untrailingslashit( ABSPATH ) );
 
-        if ( strpos( $outputDir, $docRoot ) === 0 ) {
-            return ltrim( substr( $outputDir, strlen( $docRoot ) ), '/' );
+        // Derive document root from the uploads URL/path relationship.
+        $uploadDir = wp_upload_dir();
+        $basedir   = wp_normalize_path( untrailingslashit( $uploadDir['basedir'] ) );
+        $baseurl   = untrailingslashit( $uploadDir['baseurl'] );
+
+        // Extract the URL path component to determine relative position.
+        $urlPath = wp_parse_url( $baseurl, PHP_URL_PATH );
+        if ( $urlPath && strpos( $outputDir, $basedir ) === 0 ) {
+            $relative = substr( $outputDir, strlen( $basedir ) );
+            return ltrim( $urlPath . $relative, '/' );
         }
 
-        return 'wp-content/uploads-webpc';
+        return 'wp-content/uploads/jeex-webp';
     }
 }

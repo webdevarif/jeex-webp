@@ -12,6 +12,11 @@ require_once ABSPATH . 'wp-admin/includes/file.php';
 WP_Filesystem();
 global $wp_filesystem;
 
+// Determine paths using WordPress functions.
+$uploadDir  = wp_upload_dir();
+$uploadsDir = trailingslashit( $uploadDir['basedir'] );
+$outputDir  = $uploadsDir . 'jeex-webp/';
+
 // Delete all plugin options
 $options = [
     'jeex_webp_quality',
@@ -39,17 +44,18 @@ delete_transient( 'jeex_webp_monthly_count' );
 // Unschedule cron
 wp_clear_scheduled_hook( 'jeex_webp_cron_convert' );
 
-// Remove passthru file
-$passthruFile = WP_CONTENT_DIR . '/jeex-webp-passthru.php';
+// Remove passthru file (now inside output dir)
+$passthruFile = $outputDir . 'passthru.php';
 if ( file_exists( $passthruFile ) ) {
     wp_delete_file( $passthruFile );
 }
 
 // Remove .htaccess rules.
+$uploadsParent = dirname( $uploadsDir );
 $htaccessFiles = array(
-    WP_CONTENT_DIR . '/uploads/.htaccess',
-    WP_CONTENT_DIR . '/uploads-webpc/.htaccess',
-    WP_CONTENT_DIR . '/.htaccess',
+    $uploadsDir . '.htaccess',
+    $outputDir . '.htaccess',
+    trailingslashit( $uploadsParent ) . '.htaccess',
 );
 
 foreach ( $htaccessFiles as $file ) {
@@ -74,7 +80,6 @@ foreach ( $htaccessFiles as $file ) {
 
 // Optionally remove converted files directory
 // Uncomment if you want to delete all WebP files on uninstall:
-// $outputDir = WP_CONTENT_DIR . '/uploads-webpc';
 // if ( is_dir( $outputDir ) ) {
 //     $iterator = new RecursiveIteratorIterator(
 //         new RecursiveDirectoryIterator( $outputDir, RecursiveDirectoryIterator::SKIP_DOTS ),

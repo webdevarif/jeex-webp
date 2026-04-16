@@ -29,12 +29,14 @@ class PathResolver {
 
     /**
      * Get the WebP output base directory (absolute path).
+     * Files are stored inside the uploads directory per WP.org guidelines.
      */
     public function getOutputDir(): string {
         if ( null === $this->outputDir ) {
-            $contentDir      = trailingslashit( WP_CONTENT_DIR );
-            $dirName         = apply_filters( 'jeex_webp_output_dir', 'uploads-webpc' );
-            $this->outputDir = $contentDir . $dirName . '/';
+            $uploadDir       = wp_upload_dir();
+            $basedir         = trailingslashit( $uploadDir['basedir'] );
+            $dirName         = apply_filters( 'jeex_webp_output_dir', 'jeex-webp' );
+            $this->outputDir = $basedir . $dirName . '/';
         }
         return $this->outputDir;
     }
@@ -44,7 +46,7 @@ class PathResolver {
      *
      * Example:
      *   Source: /wp-content/uploads/2024/01/photo.jpg
-     *   Output: /wp-content/uploads-webpc/2024/01/photo.jpg.webp
+     *   Output: /wp-content/uploads/jeex-webp/2024/01/photo.jpg.webp
      */
     public function getOutputPath( string $sourcePath, string $format = 'webp' ): string {
         $relativePath = $this->getRelativePath( $sourcePath );
@@ -113,9 +115,10 @@ class PathResolver {
      * Get the output base URL.
      */
     public function getOutputUrl(): string {
-        $contentUrl = trailingslashit( content_url() );
-        $dirName    = apply_filters( 'jeex_webp_output_dir', 'uploads-webpc' );
-        return $contentUrl . $dirName . '/';
+        $uploadDir = wp_upload_dir();
+        $baseUrl   = trailingslashit( $uploadDir['baseurl'] );
+        $dirName   = apply_filters( 'jeex_webp_output_dir', 'jeex-webp' );
+        return $baseUrl . $dirName . '/';
     }
 
     /**

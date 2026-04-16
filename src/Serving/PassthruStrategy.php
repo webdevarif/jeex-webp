@@ -97,8 +97,11 @@ class PassthruStrategy implements ServeStrategy {
         }
     }
 
+    /**
+     * Get the passthru file path inside the output directory.
+     */
     private function getPassthruFilePath(): string {
-        return trailingslashit( WP_CONTENT_DIR ) . 'jeex-webp-passthru.php';
+        return $this->pathResolver->getOutputDir() . 'passthru.php';
     }
 
     private function generatePassthruFile(): bool {
@@ -107,6 +110,9 @@ class PassthruStrategy implements ServeStrategy {
         if ( ! $this->initFilesystem() ) {
             return false;
         }
+
+        // Ensure output dir exists for the passthru file.
+        $this->pathResolver->ensureOutputDir();
 
         $outputDir  = addslashes( $this->pathResolver->getOutputDir() );
         $uploadsDir = addslashes( $this->pathResolver->getUploadsDir() );

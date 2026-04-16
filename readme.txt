@@ -49,7 +49,7 @@ Jeex WebP automatically converts your JPEG, PNG, and GIF images to WebP format, 
 
 = Does this change my original images? =
 
-No. Your original images are never modified. WebP versions are stored in a separate directory (`wp-content/uploads-webpc/`).
+No. Your original images are never modified. WebP versions are stored in a separate directory (`wp-content/uploads/jeex-webp/`).
 
 = What happens if I deactivate the plugin? =
 

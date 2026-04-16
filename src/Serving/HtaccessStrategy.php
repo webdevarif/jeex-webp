@@ -36,8 +36,9 @@ class HtaccessStrategy implements ServeStrategy {
             $success = false;
         }
 
-        // 3. Write Vary header rules to wp-content/.htaccess
-        $contentHtaccess = trailingslashit( WP_CONTENT_DIR ) . '.htaccess';
+        // 3. Write Vary header rules to uploads parent directory .htaccess
+        $uploadsParent   = dirname( $this->pathResolver->getUploadsDir() );
+        $contentHtaccess = trailingslashit( $uploadsParent ) . '.htaccess';
         if ( ! $this->addRulesToFile( $contentHtaccess, $this->generator->getVaryHeaderRules() ) ) {
             $success = false;
         }
@@ -46,10 +47,12 @@ class HtaccessStrategy implements ServeStrategy {
     }
 
     public function deactivate(): bool {
+        $uploadsParent = dirname( $this->pathResolver->getUploadsDir() );
+
         $files = [
             $this->pathResolver->getUploadsDir() . '.htaccess',
             $this->pathResolver->getOutputDir() . '.htaccess',
-            trailingslashit( WP_CONTENT_DIR ) . '.htaccess',
+            trailingslashit( $uploadsParent ) . '.htaccess',
         ];
 
         foreach ( $files as $file ) {
